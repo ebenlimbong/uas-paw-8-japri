@@ -10,7 +10,6 @@ from .. import models
 
 
 def _json_error(message, status=400):
-    """Helper untuk balikin error JSON rapi."""
     return {
         "success": False,
         "error": message,
@@ -20,16 +19,6 @@ def _json_error(message, status=400):
 
 @view_config(route_name="api_register", renderer="json", request_method="POST")
 def register(request):
-    """
-    Register user baru (Job Seeker atau Employer).
-    Body JSON:
-    {
-      "name": "...",
-      "email": "...",
-      "password": "...",
-      "role": "seeker" | "employer"
-    }
-    """
     data = request.json_body or {}
 
     name = data.get("name")
@@ -94,52 +83,36 @@ def register(request):
         },
     }
 
+from ..utils.jwt_helper import create_token
 
-@view_config(route_name="api_login", renderer="json", request_method="POST")
+@view_config(route_name='login', renderer='json', request_method='POST')
 def login(request):
-    """
-    Login user.
-    Body JSON:
-    {
-      "email": "...",
-      "password": "..."
-    }
-    """
-    data = request.json_body or {}
-
+    data = request.json_body
     email = data.get("email")
     password = data.get("password")
 
-    if not email or not password:
-        request.response.status = 400
-        return _json_error("email dan password wajib diisi.")
+    user = request.dbsession.query(models.User).filter_by(email=email).first()
+    if not user:
+        return _json_error("Email tidak ditemukan.")
 
-    dbsession = request.dbsession
-
-    user = (
-        dbsession.query(models.User)
-        .filter(models.User.email == email)
-        .first()
-    )
-
-    if user is None:
-        request.response.status = 401
-        return _json_error("Email atau password salah.", status=401)
-
-    # cek password
     if not pwd_context.verify(password, user.password):
-        request.response.status = 401
-        return _json_error("Email atau password salah.", status=401)
+        return _json_error("Password salah.")
 
-    # Di sini nanti bisa ditambah JWT / session.
-    # Untuk sekarang kita balikin info user saja.
+    token = create_token(user.id, user.role)
+
     return {
         "success": True,
         "message": "Login berhasil.",
+        "token": token,
         "data": {
             "id": user.id,
-            "name": user.name,
             "email": user.email,
-            "role": user.role,
-        },
+            "role": user.role
+        }
     }
+
+
+
+
+
+

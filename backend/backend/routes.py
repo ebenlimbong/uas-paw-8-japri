@@ -3,5 +3,5 @@ def includeme(config):
     config.add_route('home', '/')
     
     config.add_route('api_register', '/api/register')
-    config.add_route('api_login', '/api/login')
+    config.add_route('login', '/api/login')
 
