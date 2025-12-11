@@ -7,5 +7,7 @@ def includeme(config):
 
 
     config.add_route('api_jobs', '/api/jobs')
+    config.add_route("job_search", "/api/jobs/search")
+    
     # detail / update / delete job berdasarkan ID
     config.add_route('api_job_detail', '/api/jobs/{id}')

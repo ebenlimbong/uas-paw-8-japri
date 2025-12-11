@@ -4,6 +4,8 @@ from pyramid.httpexceptions import HTTPNotFound, HTTPForbidden
 from .. import models
 from ..utils.auth_decorators import login_required, role_required
 
+from sqlalchemy import or_
+
 
 def _json_error(message, status=400):
     return {
@@ -13,9 +15,7 @@ def _json_error(message, status=400):
     }
 
 
-# =========================
 # 1) CREATE JOB (Employer)
-# =========================
 @view_config(
     route_name="api_jobs",
     renderer="json",
@@ -59,9 +59,7 @@ def create_job(request):
     }
 
 
-# =========================
 # 2) LIST JOBS (semua job)
-# =========================
 @view_config(
     route_name="api_jobs",
     renderer="json",
@@ -77,9 +75,7 @@ def list_jobs(request):
     }
 
 
-# =========================
 # 3) GET JOB DETAIL
-# =========================
 @view_config(
     route_name="api_job_detail",
     renderer="json",
@@ -100,9 +96,7 @@ def get_job_detail(request):
     }
 
 
-# =========================
 # 4) UPDATE JOB (Employer, owner only)
-# =========================
 @view_config(
     route_name="api_job_detail",
     renderer="json",
@@ -138,9 +132,7 @@ def update_job(request):
     }
 
 
-# =========================
 # 5) DELETE JOB (Employer, owner only)
-# =========================
 @view_config(
     route_name="api_job_detail",
     renderer="json",
@@ -168,3 +160,45 @@ def delete_job(request):
         "success": True,
         "message": "Job berhasil dihapus.",
     }
+
+
+@view_config(route_name="job_search", renderer="json", request_method="GET")
+def search_jobs(request):
+    db = request.dbsession
+    query = db.query(models.Job)
+
+    # Mengambil parameter query
+    keyword = request.params.get("q")
+    location = request.params.get("location")
+    job_type = request.params.get("type")
+    min_salary = request.params.get("min_salary")
+    max_salary = request.params.get("max_salary")
+
+    # Fitur search
+    if keyword:
+        query = query.filter(or_(
+            models.Job.title.ilike(f"%{keyword}%"),
+            models.Job.description.ilike(f"%{keyword}%"),
+            models.Job.requirements.ilike(f"%{keyword}%")
+        ))
+
+    # Filter berdasarkan Lokasi
+    if location:
+        query = query.filter(models.Job.location.ilike(f"%{location}%"))
+
+    # Filter berdasarkan  Job Type
+    if job_type:
+        query = query.filter(models.Job.location.ilike(f"%{job_type}%"))
+
+    # Filter berdasarkan Salary 
+    try:
+        if min_salary:
+            query = query.filter(models.Job.salary >= int(min_salary))
+        if max_salary:
+            query = query.filter(models.Job.salary <= int(max_salary))
+    except ValueError:
+        return {"success": False, "error": "Invalid salary value"}
+
+    results = [job.to_dict() for job in query.all()]
+
+    return {"success": True, "count": len(results), "data": results}
