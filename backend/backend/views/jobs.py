@@ -188,7 +188,8 @@ def search_jobs(request):
 
     # Filter berdasarkan  Job Type
     if job_type:
-        query = query.filter(models.Job.location.ilike(f"%{job_type}%"))
+        query = query.filter(models.Job.type.ilike(f"%{job_type}%"))
+
 
     # Filter berdasarkan Salary 
     try:

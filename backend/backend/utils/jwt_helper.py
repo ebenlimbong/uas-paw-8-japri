@@ -2,7 +2,7 @@ import jwt
 import datetime
 from pyramid.settings import asbool
 
-SECRET_KEY = "SUPER_SECRET_KEY_CHANGE_THIS"
+SECRET_KEY = "3b3n_k3r3n"
 
 def create_token(user_id, role):
     payload = {
