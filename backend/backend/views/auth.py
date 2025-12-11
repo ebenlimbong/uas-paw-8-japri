@@ -1,6 +1,10 @@
 from pyramid.view import view_config
 from pyramid.httpexceptions import HTTPBadRequest, HTTPUnauthorized
-from passlib.hash import bcrypt
+from passlib.context import CryptContext
+pwd_context = CryptContext(
+    schemes=["argon2"],
+    deprecated="auto"
+)
 
 from .. import models
 
@@ -56,7 +60,7 @@ def register(request):
         return _json_error("Email sudah terdaftar, silakan login.")
 
     # 3. Hash password
-    hashed_password = bcrypt.hash(password)
+    hashed_password = pwd_context.hash(password)
 
     # 4. Simpan user
     user = models.User(
@@ -123,7 +127,7 @@ def login(request):
         return _json_error("Email atau password salah.", status=401)
 
     # cek password
-    if not bcrypt.verify(password, user.password):
+    if not pwd_context.verify(password, user.password):
         request.response.status = 401
         return _json_error("Email atau password salah.", status=401)
 
