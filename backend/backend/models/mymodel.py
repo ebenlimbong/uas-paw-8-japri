@@ -11,9 +11,7 @@ from sqlalchemy.orm import relationship
 from .meta import Base
 
 
-# ===========================
 # USERS TABLE
-# ===========================
 class User(Base):
     __tablename__ = "users"
 
@@ -27,9 +25,7 @@ class User(Base):
     jobs = relationship("Job", back_populates="employer")
 
 
-# ===========================
 # JOB SEEKER PROFILE
-# ===========================
 class JobSeeker(Base):
     __tablename__ = "job_seekers"
 
@@ -43,9 +39,7 @@ class JobSeeker(Base):
     applications = relationship("Application", back_populates="seeker")
 
 
-# ===========================
 # JOB POSTS (Employer)
-# ===========================
 class Job(Base):
     __tablename__ = "jobs"
 
@@ -75,9 +69,7 @@ class Job(Base):
 
 
 
-# ===========================
 # JOB APPLICATIONS
-# ===========================
 class Application(Base):
     __tablename__ = "applications"
 
