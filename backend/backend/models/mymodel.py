@@ -60,6 +60,19 @@ class Job(Base):
 
     employer = relationship("User", back_populates="jobs")
     applications = relationship("Application", back_populates="job")
+    
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "employer_id": self.employer_id,
+            "title": self.title,
+            "description": self.description,
+            "requirements": self.requirements,
+            "salary": float(self.salary) if self.salary is not None else None,
+            "location": self.location,
+            "type": self.type,
+        }
+
 
 
 # ===========================

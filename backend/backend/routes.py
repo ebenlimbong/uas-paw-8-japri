@@ -5,3 +5,7 @@ def includeme(config):
     config.add_route('api_register', '/api/register')
     config.add_route('login', '/api/login')
 
+
+    config.add_route('api_jobs', '/api/jobs')
+    # detail / update / delete job berdasarkan ID
+    config.add_route('api_job_detail', '/api/jobs/{id}')

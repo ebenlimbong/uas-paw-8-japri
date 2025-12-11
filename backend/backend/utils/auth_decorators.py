@@ -1,21 +1,37 @@
 from pyramid.httpexceptions import HTTPUnauthorized, HTTPForbidden
 
-def require_auth(view):
+
+def login_required(func):
     def wrapper(request):
-        if not request.user:
-            raise HTTPUnauthorized(json_body={"error": "Unauthorized"})
-        return view(request)
+        if not hasattr(request, "user") or request.user is None:
+            request.response.status = 401
+            return {
+                "success": False,
+                "error": "Unauthorized, login dulu."
+            }
+        return func(request)
+
     return wrapper
 
-def require_role(*roles):
-    def decorator(view):
+
+def role_required(role):
+    def decorator(func):
         def wrapper(request):
-            if not request.user:
-                raise HTTPUnauthorized(json_body={"error": "Unauthorized"})
+            if not hasattr(request, "user") or request.user is None:
+                request.response.status = 401
+                return {
+                    "success": False,
+                    "error": "Unauthorized, login dulu."
+                }
 
-            if request.user["role"] not in roles:
-                raise HTTPForbidden(json_body={"error": "Forbidden"})
+            if request.user.get("role") != role:
+                request.response.status = 403
+                return {
+                    "success": False,
+                    "error": f"Akses ditolak, role '{role}' dibutuhkan."
+                }
 
-            return view(request)
+            return func(request)
+
         return wrapper
     return decorator
