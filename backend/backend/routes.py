@@ -39,4 +39,5 @@ def includeme(config):
     
     # Menambahakn routes untuk company 
     config.add_route("company_profile_me", "/api/company/me")
+    config.add_route("company_profile_public", "/api/company/{id}")
 

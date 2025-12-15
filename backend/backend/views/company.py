@@ -37,3 +37,35 @@ def get_company_profile(request):
             "location": profile.location,
         }
     }
+
+@view_config(
+    route_name="company_profile_me",
+    renderer="json",
+    request_method="PUT"
+)
+@login_required
+@role_required("employer")
+def update_company_profile(request):
+    db = request.dbsession
+    user_id = request.user["user_id"]
+    data = request.json_body or {}
+
+    profile = (
+        db.query(models.CompanyProfile)
+        .filter_by(employer_id=user_id)
+        .first()
+    )
+
+    if not profile:
+        profile = models.CompanyProfile(employer_id=user_id)
+        db.add(profile)
+
+    profile.company_name = data.get("company_name")
+    profile.description = data.get("description")
+    profile.website = data.get("website")
+    profile.location = data.get("location")
+
+    return {
+        "success": True,
+        "message": "Company profile berhasil disimpan"
+    }
