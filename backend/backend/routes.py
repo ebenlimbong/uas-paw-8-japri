@@ -16,6 +16,12 @@ def includeme(config):
     # Fitur apply job untuk user 
     config.add_route("job_apply", "/api/jobs/{id}/apply")
     
+    # Api untuk user melihat pekerjaan yang sudah dilamar 
     config.add_route("my_applications", "/api/applications/me")
-
+    
+    # Api untuk employer, melihat data user yang melamar ke perusahaannya 
+    config.add_route(
+    "job_applications",
+    "/api/jobs/{job_id}/applications"
+)
 

@@ -119,3 +119,66 @@ def my_applications(request):
         "count": len(results),
         "data": results
     }
+
+
+@view_config(
+    route_name="job_applications",
+    renderer="json",
+    request_method="GET"
+)
+@login_required
+@role_required("employer")
+def job_applications(request):
+    db = request.dbsession
+    user_payload = request.user
+
+    job_id = request.matchdict.get("job_id")
+
+    # 1. Ambil job
+    job = db.query(models.Job).filter_by(id=job_id).first()
+    if not job:
+        request.response.status = 404
+        return {
+            "success": False,
+            "error": "Job tidak ditemukan."
+        }
+
+    # 2. Pastikan job milik employer yang login
+    if job.employer_id != user_payload["user_id"]:
+        request.response.status = 403
+        return {
+            "success": False,
+            "error": "Tidak berhak melihat pelamar job ini."
+        }
+
+    # 3. Ambil semua application
+    applications = job.applications
+
+    results = []
+    for app in applications:
+        seeker = app.seeker
+        user = seeker.user
+
+        results.append({
+            "application_id": app.id,
+            "status": app.status,
+            "applied_date": str(app.applied_date),
+            "seeker": {
+                "id": seeker.id,
+                "name": user.name,
+                "email": user.email,
+                "skills": seeker.skills,
+                "experience": seeker.experience,
+                "cv_url": seeker.cv_url
+            }
+        })
+
+    return {
+        "success": True,
+        "job": {
+            "id": job.id,
+            "title": job.title
+        },
+        "count": len(results),
+        "data": results
+    }
