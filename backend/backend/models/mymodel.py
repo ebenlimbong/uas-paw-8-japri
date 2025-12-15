@@ -81,3 +81,30 @@ class Application(Base):
 
     job = relationship("Job", back_populates="applications")
     seeker = relationship("JobSeeker", back_populates="applications")
+
+
+from datetime import date
+
+class SavedJob(Base):
+    __tablename__ = "saved_jobs"
+
+    id = Column(Integer, primary_key=True)
+    seeker_id = Column(Integer, ForeignKey("job_seekers.id"))
+    job_id = Column(Integer, ForeignKey("jobs.id"))
+    created_at = Column(Date, default=date.today)
+
+    seeker = relationship("JobSeeker")
+    job = relationship("Job")
+
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "job": {
+                "id": self.job.id,
+                "title": self.job.title,
+                "location": self.job.location,
+                "salary": self.job.salary,
+                "type": self.job.type,
+            },
+            "saved_at": str(self.created_at),
+        }
