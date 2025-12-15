@@ -12,3 +12,7 @@ def includeme(config):
     # detail / update / delete job berdasarkan ID
     config.add_route('api_job_detail', '/api/jobs/{id}')
     config.add_route("profile_me", "/api/profile/me")
+    
+    # Fitur apply job untuk user 
+    config.add_route("job_apply", "/api/jobs/{id}/apply")
+
