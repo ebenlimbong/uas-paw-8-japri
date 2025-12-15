@@ -108,3 +108,14 @@ class SavedJob(Base):
             },
             "saved_at": str(self.created_at),
         }
+class CompanyProfile(Base):
+    __tablename__ = "company_profiles"
+
+    id = Column(Integer, primary_key=True)
+    employer_id = Column(Integer, ForeignKey("users.id"), unique=True)
+    company_name = Column(String(150))
+    description = Column(Text)
+    website = Column(String(200))
+    location = Column(String(100))
+
+    employer = relationship("User")
