@@ -36,5 +36,7 @@ def includeme(config):
 
     config.add_route("my_saved_jobs", "/api/saved_jobs/me")
     config.add_route("unsave_job", "/api/saved-jobs/{id}")
-
+    
+    # Menambahakn routes untuk company 
+    config.add_route("company_profile_me", "/api/company/me")
 
