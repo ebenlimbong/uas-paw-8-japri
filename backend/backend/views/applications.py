@@ -182,3 +182,77 @@ def job_applications(request):
         "count": len(results),
         "data": results
     }
+
+
+@view_config(
+    route_name="update_application_status",
+    renderer="json",
+    request_method="PUT"
+)
+@login_required
+@role_required("employer")
+def update_application_status(request):
+    db = request.dbsession
+    user_payload = request.user
+
+    application_id = request.matchdict.get("application_id")
+    data = request.json_body or {}
+    new_status = data.get("status")
+
+    ALLOWED_STATUS = ["pending", "shortlisted", "rejected"]
+
+    # 1. Validasi status
+    if new_status not in ALLOWED_STATUS:
+        request.response.status = 400
+        return {
+            "success": False,
+            "error": f"Status harus salah satu dari {ALLOWED_STATUS}"
+        }
+
+    # 2. Ambil application
+    application = (
+        db.query(models.Application)
+        .filter_by(id=application_id)
+        .first()
+    )
+
+    if not application:
+        request.response.status = 404
+        return {
+            "success": False,
+            "error": "Application tidak ditemukan."
+        }
+
+    # 3. Pastikan job milik employer
+    job = application.job
+    if job.employer_id != user_payload["user_id"]:
+        request.response.status = 403
+        return {
+            "success": False,
+            "error": "Tidak berhak mengubah status application ini."
+        }
+
+    # 4. Update status
+    application.status = new_status
+    db.flush()
+
+    seeker = application.seeker
+    user = seeker.user
+
+    return {
+        "success": True,
+        "message": "Status application berhasil diperbarui.",
+        "data": {
+            "application_id": application.id,
+            "status": application.status,
+            "job": {
+                "id": job.id,
+                "title": job.title
+            },
+            "seeker": {
+                "id": seeker.id,
+                "name": user.name,
+                "email": user.email
+            }
+        }
+    }

@@ -23,5 +23,12 @@ def includeme(config):
     config.add_route(
     "job_applications",
     "/api/jobs/{job_id}/applications"
-)
+    )
+    
+    # Api untuk employer mengupdate status dari seeker yang melamar di pekerjaan yang sudah diposting 
+    config.add_route(
+    "update_application_status",
+    "/api/applications/{application_id}/status"
+    )
+
 
