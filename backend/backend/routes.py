@@ -34,4 +34,6 @@ def includeme(config):
     # Menambahkan fitur saved jobs 
     config.add_route("save_job", "/api/jobs/{id}/save")
 
+    config.add_route("my_saved_jobs", "/api/saved_jobs/me")
+
 
