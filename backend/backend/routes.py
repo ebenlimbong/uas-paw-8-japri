@@ -30,5 +30,8 @@ def includeme(config):
     "update_application_status",
     "/api/applications/{application_id}/status"
     )
+    
+    # Menambahkan fitur saved jobs 
+    config.add_route("save_job", "/api/jobs/{id}/save")
 
 
