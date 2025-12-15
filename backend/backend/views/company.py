@@ -69,3 +69,36 @@ def update_company_profile(request):
         "success": True,
         "message": "Company profile berhasil disimpan"
     }
+
+
+@view_config(
+    route_name="company_profile_public",
+    renderer="json",
+    request_method="GET"
+)
+def public_company_profile(request):
+    db = request.dbsession
+    employer_id = int(request.matchdict["id"])
+
+    profile = (
+        db.query(models.CompanyProfile)
+        .filter_by(employer_id=employer_id)
+        .first()
+    )
+
+    if not profile:
+        request.response.status = 404
+        return {
+            "success": False,
+            "error": "Company profile tidak ditemukan"
+        }
+
+    return {
+        "success": True,
+        "data": {
+            "company_name": profile.company_name,
+            "description": profile.description,
+            "website": profile.website,
+            "location": profile.location,
+        }
+    }
