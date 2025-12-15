@@ -65,3 +65,57 @@ def apply_job(request):
             "applied_date": str(application.applied_date)
         }
     }
+
+@view_config(
+    route_name="my_applications",
+    renderer="json",
+    request_method="GET"
+)
+@login_required
+@role_required("seeker")
+def my_applications(request):
+    db = request.dbsession
+    user_payload = request.user
+
+    # 1. Ambil seeker profile
+    seeker = (
+        db.query(models.JobSeeker)
+        .filter_by(user_id=user_payload["user_id"])
+        .first()
+    )
+
+    if not seeker:
+        request.response.status = 400
+        return {
+            "success": False,
+            "error": "Profil seeker tidak ditemukan."
+        }
+
+    # 2. Ambil semua application milik seeker
+    applications = (
+        db.query(models.Application)
+        .filter_by(seeker_id=seeker.id)
+        .all()
+    )
+
+    # 3. Serialize response
+    results = []
+    for app in applications:
+        results.append({
+            "application_id": app.id,
+            "status": app.status,
+            "applied_date": str(app.applied_date),
+            "job": {
+                "id": app.job.id,
+                "title": app.job.title,
+                "location": app.job.location,
+                "salary": app.job.salary,
+                "type": app.job.type
+            }
+        })
+
+    return {
+        "success": True,
+        "count": len(results),
+        "data": results
+    }
