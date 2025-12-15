@@ -59,7 +59,7 @@ def my_saved_jobs(request):
     }
     
     
-@view_config(route_name="u nsave_job", renderer="json", request_method="DELETE")
+@view_config(route_name="unsave_job", renderer="json", request_method="DELETE")
 @login_required
 @role_required("seeker")
 def unsave_job(request):
