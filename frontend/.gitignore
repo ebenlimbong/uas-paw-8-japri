@@ -24,3 +24,5 @@ dist-ssr
 *.sw?
 ../venv
 /node_modules
+
+.env

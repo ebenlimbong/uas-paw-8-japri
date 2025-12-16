@@ -13,6 +13,12 @@ pyramid.debug_routematch = false
 pyramid.default_locale_name = en
 pyramid.includes =
     pyramid_debugtoolbar
+    pyramid_default_cors
+
+cors.allow_origin = http://localhost:5173
+cors.allow_methods = GET, POST, PUT, DELETE, OPTIONS
+cors.allow_headers = Authorization, Content-Type
+cors.allow_credentials = true
 
 sqlalchemy.url = postgresql+psycopg2://USER:PASSWORD@HOST/DB_NAME
 
