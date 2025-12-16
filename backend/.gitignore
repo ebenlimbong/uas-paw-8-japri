@@ -1,22 +1,49 @@
+# Python bytecode
 *.egg
 *.egg-info
 *.pyc
 *$py.class
 *~
+__pycache__/
+
+# Testing/Coverage
 .coverage
 coverage.xml
+coverage/
+nosetests.xml
+.pytest_cache/
+.tox/
+
+# Build
 build/
 dist/
-.tox/
-nosetests.xml
+
+# Virtual Environment (SENSITIVE!)
+venv/
+env/
 env*/
-tmp/
-Data.fs*
+.venv/
+
+# IDE
 *.sublime-project
 *.sublime-workspace
 .*.sw?
 .sw?
 .DS_Store
-coverage
-test
+.idea/
+.vscode/
+
+# Config with credentials (SENSITIVE!)
 development.ini
+production.ini
+*.ini
+!*.ini.example
+
+# Database
+*.sqlite
+*.db
+Data.fs*
+
+# Temp
+tmp/
+test/
