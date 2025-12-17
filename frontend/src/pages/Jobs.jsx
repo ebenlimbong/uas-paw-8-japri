@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { apiFetch } from '../api/client';
+import { publicFetch } from '../api/public';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 
 const Jobs = () => {
@@ -42,19 +42,15 @@ const Jobs = () => {
 
         // Panggil endpoint backend (pastikan path endpoint benar)
         // Jika route_name='job_search' biasanya pathnya /jobs atau /job_search
-        const endpoint = `/jobs?${queryBackend.toString()}`; 
+        const endpoint = `/jobs/search?${queryBackend.toString()}`; 
         
         console.log("Requesting:", endpoint); // Debugging URL
 
-        const data = await apiFetch(endpoint);
+        const data = await publicFetch(endpoint);
 
         // Handle variasi response structure
         let jobList = [];
-        if (data.success && Array.isArray(data.data)) {
-             jobList = data.data; // Sesuai return python Anda: {success: true, data: []}
-        } else if (Array.isArray(data)) {
-             jobList = data;
-        }
+        if (data.success && Array.isArray(data.data)) jobList = data.data;
 
         setJobs(jobList);
         if (jobList.length > 0) setSelectedJob(jobList[0]);

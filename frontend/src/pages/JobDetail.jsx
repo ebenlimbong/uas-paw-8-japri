@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom'; // Hapus useNavigate
-import { apiFetch } from '../api/client';
-// HAPUS import useAuth karena file context belum dibuat
-// import { useAuth } from '../context/AuthContext'; 
+import { publicFetch } from '../api/public';
 
 const JobDetail = () => {
   const { id } = useParams();
@@ -12,8 +10,8 @@ const JobDetail = () => {
   useEffect(() => {
     const fetchJobDetail = async () => {
       try {
-        const data = await apiFetch(`/api/jobs/${id}`);
-        setJob(data);
+        const res = await publicFetch(`/jobs/${id}`);
+        setJob(res.data || res); 
       } catch (error) {
         console.error("Job not found", error);
       } finally {
