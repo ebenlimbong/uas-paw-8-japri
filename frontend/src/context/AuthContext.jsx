@@ -35,7 +35,7 @@ export function AuthProvider({ children }) {
 
   //  LOGIN
   const login = async (email, password) => {
-    const res = await apiFetch("/api/login", {
+    const res = await apiFetch("/login", {
       method: "POST",
       body: JSON.stringify({ email, password }),
     });
