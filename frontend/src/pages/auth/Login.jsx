@@ -26,7 +26,7 @@ export default function Login() {
       await login(email, password);
       navigate("/");
     } catch (err) {
-      setError("Email atau password salah. Silakan coba lagi.");
+      setError(err.message || "Email atau password salah. Silakan coba lagi.");
     } finally {
       setLoading(false);
     }
