@@ -68,24 +68,11 @@ export default function Register() {
 
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-br from-indigo-50 via-white to-blue-50">
-      {/* Navbar */}
-      <nav className="flex justify-between items-center p-4 border-b border-gray-200 bg-white/80 backdrop-blur-sm">
-        <span
-          className="text-blue-700 text-3xl font-bold tracking-tighter cursor-pointer"
-          onClick={() => navigate("/")}
-        >
-          jobportal
-        </span>
-        <div className="flex gap-4 text-sm font-medium text-gray-700">
-          <Link to="/login" className="text-blue-700 hover:text-blue-800 font-semibold transition">
-            Masuk
-          </Link>
-        </div>
-      </nav>
+     
 
       {/* Main Content */}
       <main className="grow flex items-center justify-center px-4 py-8">
-        <div className="w-full max-w-md">
+        <div className="w-full max-w-xl">
           {/* Card */}
           <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-8">
             {/* Header */}
