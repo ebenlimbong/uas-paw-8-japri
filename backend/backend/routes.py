@@ -41,3 +41,4 @@ def includeme(config):
     config.add_route("company_profile_me", "/api/company/me")
     config.add_route("company_profile_public", "/api/company/{id}")
 
+    config.add_route("auth_me", "/api/auth/me")

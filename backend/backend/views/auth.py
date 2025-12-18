@@ -1,6 +1,8 @@
 from pyramid.view import view_config
 from pyramid.httpexceptions import HTTPBadRequest, HTTPUnauthorized
 from passlib.context import CryptContext
+from ..utils.jwt_helper import decode_token
+
 pwd_context = CryptContext(
     schemes=["argon2"],
     deprecated="auto"
@@ -111,8 +113,38 @@ def login(request):
         }
     }
 
+@view_config(
+    route_name="auth_me",
+    renderer="json",
+    request_method="GET"
+)
+def auth_me(request):
+    auth_header = request.headers.get("Authorization")
 
+    if not auth_header or not auth_header.startswith("Bearer "):
+        raise HTTPUnauthorized("Missing token")
 
+    token = auth_header.split(" ")[1]
+    payload = decode_token(token)
 
+    if not payload:
+        raise HTTPUnauthorized("Invalid token")
 
+    user = (
+        request.dbsession
+        .query(models.User)
+        .get(payload["user_id"])
+    )
 
+    if not user:
+        raise HTTPUnauthorized("User not found")
+
+    return {
+        "success": True,
+        "data": {
+            "id": user.id,
+            "email": user.email,
+            "role": user.role,
+            "name": user.name,
+        }
+    }
