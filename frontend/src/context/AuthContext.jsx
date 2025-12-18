@@ -7,7 +7,16 @@ export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);      // data user
   const [loading, setLoading] = useState(true); // cek token awal
 
-  //  cek token saat app pertama kali jalan
+  // Helper function to decode JWT
+  const parseJwt = (token) => {
+    try {
+      return JSON.parse(atob(token.split(".")[1]));
+    } catch (e) {
+      return null;
+    }
+  };
+
+  // cek token saat app pertama kali jalan
   useEffect(() => {
     const token = localStorage.getItem("token");
 
@@ -16,26 +25,65 @@ export function AuthProvider({ children }) {
       return;
     }
 
-    // ambil profile user dari backend
-    apiFetch("/api/auth/me")
-      .then((res) => {
+    // Attempt to fetch user from /api/auth/me
+    const fetchUserString = async () => {
+      try {
+        const res = await apiFetch("/api/auth/me");
         if (res.success) {
           setUser(res.data);
         } else {
-          localStorage.removeItem("token");
-          setUser(null);
+          throw new Error("Auth me failed");
         }
-      })
-      .catch(() => {
+      } catch (error) {
+        console.warn("Auth check failed, trying fallback...", error);
+        
+        // Fallback: Check Role from Token
+        const decoded = parseJwt(token);
+        if (decoded && decoded.role === "seeker") {
+          try {
+            // Seeker Fallback: /api/profile/me
+            // Note: /api/profile/me results in data: { id, name, email, role, profile: {...} }
+            const resProfile = await apiFetch("/api/profile/me");
+            if (resProfile.success) {
+               // We reconstruct a user object compatible with what auth/me would return
+               setUser({
+                 id: resProfile.data.id,
+                 name: resProfile.data.name,
+                 email: resProfile.data.email,
+                 role: resProfile.data.role,
+                 // profile: resProfile.data.profile // we can store this if needed, but Context usually just needs basic info
+               });
+               return; // Success
+            }
+          } catch (e2) {
+             console.error("Fallback profile fetch failed", e2);
+          }
+        } else if (decoded && decoded.role === 'employer') {
+            // Employer Fallback: We don't have a reliable endpoint for Name/Email if auth/me is dead.
+            // We'll set what we have from the token.
+             setUser({
+               id: decoded.user_id, // ensure this matches token payload key
+               role: decoded.role,
+               email: "", // unknown
+               name: "Employer", // unknown
+             });
+             return;
+        }
+
+        // If all fails:
         localStorage.removeItem("token");
         setUser(null);
-      })
-      .finally(() => setLoading(false));
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUserString();
   }, []);
 
   //  LOGIN
   const login = async (email, password) => {
-    const res = await apiFetch("/login", {
+    const res = await apiFetch("/api/login", {
       method: "POST",
       body: JSON.stringify({ email, password }),
     });

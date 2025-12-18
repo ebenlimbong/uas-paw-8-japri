@@ -39,14 +39,14 @@ const Navbar = () => {
                     <div className="flex items-center gap-4">
                         {user ? (
                             <div className="flex items-center gap-4">
-                                <div className="flex items-center gap-2">
+                                <Link to={user.role === 'seeker' ? '/seeker/profile' : '#'} className="flex items-center gap-2 hover:bg-gray-50 rounded-full pr-3 py-1 transition-colors">
                                     <div className="w-9 h-9 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full flex items-center justify-center">
                                         <span className="text-white font-semibold text-sm">
                                             {user.name?.charAt(0).toUpperCase() || 'U'}
                                         </span>
                                     </div>
                                     <span className="hidden sm:block text-sm font-medium text-gray-700">{user.name}</span>
-                                </div>
+                                </Link>
                                 <button
                                     onClick={handleLogout}
                                     className="text-sm text-gray-500 hover:text-red-500 transition-colors"

@@ -10,6 +10,7 @@ import ProtectedRoute from "./components/ProtectedRoute.jsx";
 // prosess
 import Login from "./pages/auth/Login";
 import Register from "./pages/auth/Register";
+import Profile from "./pages/seeker/Profile";
 
 export default function App() {
   const { loading } = useAuth();
@@ -30,7 +31,8 @@ export default function App() {
 
       {/* ========== SEEKER ONLY ========== */}
       <Route element={<ProtectedRoute allowedRoles={["seeker"]} />}>
-        <Route path="/seeker/*" element={<div>Seeker Dashboard</div>} />
+        {/* <Route path="/seeker/*" element={<div>Seeker Dashboard</div>} /> */}
+        <Route path="/seeker/profile" element={<Profile />} />
       </Route>
 
       {/* ========== EMPLOYER ONLY ========== */}

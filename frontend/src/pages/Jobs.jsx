@@ -130,14 +130,12 @@ const Jobs = () => {
             </svg>
           </button>
           {user ? (
-            <div className="w-9 h-9 bg-blue-500 rounded-full flex items-center justify-center">
+            <Link to={user.role === 'seeker' ? '/seeker/profile' : '#'} className="w-9 h-9 bg-blue-500 rounded-full flex items-center justify-center hover:opacity-90 transition-opacity">
               <span className="text-white font-semibold text-sm">{user.name?.charAt(0) || 'U'}</span>
-            </div>
+            </Link>
           ) : (
-            <Link to="/login" className="w-9 h-9 bg-gray-200 rounded-full flex items-center justify-center">
-              <svg className="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-              </svg>
+             <Link to="/login" className="text-blue-700 hover:text-blue-800 font-semibold transition-colors text-sm">
+              Masuk
             </Link>
           )}
         </div>
@@ -342,7 +340,7 @@ const Jobs = () => {
         {/* Right Sidebar - User Profile */}
         <aside className="w-64 shrink-0 hidden xl:block">
           {/* User Profile Card */}
-          <div className="bg-white border border-gray-200 rounded-xl p-5 mb-4 text-center">
+          <Link to={user?.role === 'seeker' ? '/seeker/profile' : '#'} className="block bg-white border border-gray-200 rounded-xl p-5 mb-4 text-center hover:shadow-md transition-shadow">
             <div className="w-16 h-16 bg-gradient-to-br from-orange-300 to-orange-400 rounded-full mx-auto mb-3 flex items-center justify-center">
               {user ? (
                 <span className="text-white font-bold text-xl">{user.name?.charAt(0)}</span>
@@ -355,7 +353,7 @@ const Jobs = () => {
             <h3 className="font-semibold text-gray-800">{user?.name || 'Guest User'}</h3>
             <p className="text-sm text-gray-500">{user?.role === 'employer' ? 'Employer' : 'Job Seeker'}</p>
             <p className="text-xs text-blue-500 mt-1">4+ years</p>
-          </div>
+          </Link>
 
           {/* Stats */}
           <div className="bg-white border border-gray-200 rounded-xl p-5 mb-4">
