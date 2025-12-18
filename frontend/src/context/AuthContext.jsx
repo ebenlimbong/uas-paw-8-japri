@@ -17,7 +17,7 @@ export function AuthProvider({ children }) {
     }
 
     // ambil profile user dari backend
-    apiFetch("/auth/me")
+    apiFetch("/api/auth/me")
       .then((res) => {
         if (res.success) {
           setUser(res.data);
@@ -35,13 +35,18 @@ export function AuthProvider({ children }) {
 
   //  LOGIN
   const login = async (email, password) => {
-    const res = await apiFetch("/auth/login", {
+    const res = await apiFetch("/api/login", {
       method: "POST",
       body: JSON.stringify({ email, password }),
     });
 
-    localStorage.setItem("token", res.data.token);
-    setUser(res.data.user);
+    if (!res.success) {
+      throw new Error(res.error || "Login gagal");
+    }
+
+    // Backend mengembalikan token di root response, bukan di res.data
+    localStorage.setItem("token", res.token);
+    setUser(res.data);
   };
 
   //  LOGOUT
