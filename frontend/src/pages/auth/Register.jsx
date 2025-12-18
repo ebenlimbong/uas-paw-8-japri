@@ -46,7 +46,7 @@ export default function Register() {
 
     setLoading(true);
     try {
-      await apiFetch("/api/register", {
+      await apiFetch("/register", {
         method: "POST",
         body: JSON.stringify({
           name: formData.name,
@@ -68,7 +68,7 @@ export default function Register() {
 
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-br from-indigo-50 via-white to-blue-50">
-     
+
 
       {/* Main Content */}
       <main className="grow flex items-center justify-center px-4 py-8">
