@@ -6,18 +6,35 @@ import Navbar from '../components/Navbar.jsx';
 const Home = () => {
   const [keyword, setKeyword] = useState('');
   const [location, setLocation] = useState('');
-  const [experience, setExperience] = useState('');
+  
+  const [salary, setSalary] = useState('');
+
   const navigate = useNavigate();
   const { user } = useAuth();
 
+  // Salary
+  const salaryOptions = [
+    { label: '1 - 5 jt', min: 1000000, max: 5000000 },
+    { label: '6 - 10 jt', min: 6000000, max: 10000000 },
+    { label: '15 - 20 jt', min: 15000000, max: 20000000 },
+    { label: '> 20 jt', min: 20000000, max: '' },
+  ];
+
   const relatedSearches = ['UI design', 'Web design', 'Graphic designer', 'User interface'];
 
+  // ✅ PERUBAHAN: Logika handleSearch untuk mengirim min_salary & max_salary
   const handleSearch = (e) => {
     e.preventDefault();
     const params = new URLSearchParams();
     if (keyword) params.append('q', keyword);
     if (location) params.append('loc', location);
-    if (experience) params.append('exp', experience);
+    
+    if (salary) {
+      const selected = salaryOptions.find(s => s.label === salary);
+      if (selected?.min) params.append('min_salary', selected.min);
+      if (selected?.max) params.append('max_salary', selected.max);
+    }
+    
     navigate(`/jobs?${params.toString()}`);
   };
 
@@ -67,22 +84,23 @@ const Home = () => {
               />
             </div>
 
-            {/* Experience Dropdown */}
-            <div className="flex items-center gap-3 bg-gray-50 rounded-lg px-4 py-3 md:w-52">
+            <div className="flex items-center gap-3 bg-gray-50 rounded-lg px-4 py-3 md:w-52 relative">
               <svg className="w-5 h-5 text-gray-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
               <select
                 className="w-full bg-transparent outline-none text-gray-700 text-sm cursor-pointer appearance-none"
-                value={experience}
-                onChange={(e) => setExperience(e.target.value)}
+                value={salary}
+                onChange={(e) => setSalary(e.target.value)}
               >
-                <option value="">Level/ experience</option>
-                <option value="entry">Entry Level</option>
-                <option value="mid">Mid Level (3+ years)</option>
-                <option value="senior">Senior Level (5+ years)</option>
+                <option value="">Salary range</option>
+                {salaryOptions.map(option => (
+                  <option key={option.label} value={option.label}>
+                    {option.label}
+                  </option>
+                ))}
               </select>
-              <svg className="w-4 h-4 text-gray-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-4 h-4 text-gray-400 shrink-0 absolute right-4 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
               </svg>
             </div>
@@ -115,7 +133,7 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Main Content would normally go here - for landing we show features */}
+      {/* Main Content */}
       <section className="py-16 px-6 bg-gray-50">
         <div className="max-w-5xl mx-auto text-center">
           <h2 className="text-2xl font-bold text-gray-800 mb-4">Start your job search here</h2>

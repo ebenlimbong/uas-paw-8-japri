@@ -17,13 +17,17 @@ const Jobs = () => {
   // Form states
   const [keyword, setKeyword] = useState(searchParams.get('q') || '');
   const [location, setLocation] = useState(searchParams.get('loc') || '');
-  const [experience, setExperience] = useState('');
-
-  // Filter states
+  
+  const [salary, setSalary] = useState('');
+  const [jobType, setJobType] = useState(searchParams.get('type') || '');
   const [sortBy, setSortBy] = useState('relevancy');
-  const [jobType, setJobType] = useState('Full-time');
-  const [salaryRange, setSalaryRange] = useState([150, 2500]);
-  const [workMode, setWorkMode] = useState('Remote');
+
+  const salaryOptions = [
+    { label: '1 - 5 jt', min: 1000000, max: 5000000 },
+    { label: '6 - 10 jt', min: 6000000, max: 10000000 },
+    { label: '15 - 20 jt', min: 15000000, max: 20000000 },
+    { label: '> 20 jt', min: 20000000, max: '' },
+  ];
 
   // Pagination
   const [currentPage, setCurrentPage] = useState(1);
@@ -33,47 +37,48 @@ const Jobs = () => {
     const fetchJobs = async () => {
       setLoading(true);
       try {
-        const queryBackend = new URLSearchParams();
-        const qParam = searchParams.get('q');
-        const locParam = searchParams.get('loc');
-        const typeParam = searchParams.get('type');
-        const salParam = searchParams.get('sal');
+        const query = new URLSearchParams();
 
-        if (qParam) queryBackend.append('q', qParam);
-        if (locParam) queryBackend.append('location', locParam);
-        if (typeParam) queryBackend.append('type', typeParam);
+        if (searchParams.get('q')) query.append('q', searchParams.get('q'));
+        if (searchParams.get('loc')) query.append('location', searchParams.get('loc'));
+        if (searchParams.get('type')) query.append('type', searchParams.get('type'));
 
-        if (salParam) {
-          const [min, max] = salParam.split('-');
-          if (min) queryBackend.append('min_salary', min);
-          if (max) queryBackend.append('max_salary', max);
-        }
+        if (searchParams.get('min_salary'))
+          query.append('min_salary', searchParams.get('min_salary'));
 
-        const endpoint = `/jobs/search?${queryBackend.toString()}`;
-        const data = await publicFetch(endpoint);
+        if (searchParams.get('max_salary'))
+          query.append('max_salary', searchParams.get('max_salary'));
 
-        let jobList = [];
-        if (data.success && Array.isArray(data.data)) jobList = data.data;
-
+        const res = await publicFetch(`/jobs/search?${query.toString()}`);
+        const jobList = res.success ? res.data : [];
+        
         setJobs(jobList);
         if (jobList.length > 0) setSelectedJob(jobList[0]);
-        else setSelectedJob(null);
-      } catch (error) {
-        console.error("Error fetching jobs:", error);
+      } catch (err) {
+        console.error(err);
         setJobs([]);
       } finally {
         setLoading(false);
       }
     };
+
     fetchJobs();
   }, [searchParams]);
 
   const handleSearch = (e) => {
     e.preventDefault();
     const params = new URLSearchParams();
+
     if (keyword) params.append('q', keyword);
     if (location) params.append('loc', location);
     if (jobType) params.append('type', jobType);
+
+    if (salary) {
+      const selected = salaryOptions.find(s => s.label === salary);
+      if (selected?.min) params.append('min_salary', selected.min);
+      if (selected?.max) params.append('max_salary', selected.max);
+    }
+
     navigate(`/jobs?${params.toString()}`);
   };
 
@@ -88,7 +93,6 @@ const Jobs = () => {
     );
   };
 
-  // Pagination
   const indexOfLastJob = currentPage * jobsPerPage;
   const indexOfFirstJob = indexOfLastJob - jobsPerPage;
   const currentJobs = jobs.slice(indexOfFirstJob, indexOfLastJob);
@@ -106,43 +110,48 @@ const Jobs = () => {
     <div className="min-h-screen bg-white">
       <Navbar />
 
-      {/* Hero Search - Blue Gradient */}
-      <section className="bg-gradient-to-r from-blue-500 to-blue-600 py-8 px-6">
-        <div className="max-w-6xl mx-auto">
-          <h1 className="text-2xl md:text-3xl font-bold text-white mb-6">Let's find your dream job!</h1>
+      <section className="bg-gradient-to-r from-blue-500 via-blue-500 to-blue-600 py-12 px-6">
+        <div className="max-w-5xl mx-auto">
+          <h1 className="text-3xl md:text-4xl font-bold text-white mb-8">Let's find your dream job!</h1>
           <form onSubmit={handleSearch} className="bg-white rounded-xl p-2 flex flex-col md:flex-row items-stretch gap-2 shadow-lg">
             <div className="flex-1 flex items-center gap-3 bg-gray-50 rounded-lg px-4 py-3">
               <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
               </svg>
-              <input className="w-full bg-transparent outline-none text-gray-700 text-sm" placeholder="Find job title" value={keyword} onChange={(e) => setKeyword(e.target.value)} />
+              <input className="w-full bg-transparent outline-none text-gray-700 text-sm placeholder-gray-400" placeholder="Find job title" value={keyword} onChange={(e) => setKeyword(e.target.value)} />
             </div>
             <div className="flex-1 flex items-center gap-3 bg-gray-50 rounded-lg px-4 py-3">
               <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
               </svg>
-              <input className="w-full bg-transparent outline-none text-gray-700 text-sm" placeholder="Country/ City" value={location} onChange={(e) => setLocation(e.target.value)} />
+              <input className="w-full bg-transparent outline-none text-gray-700 text-sm placeholder-gray-400" placeholder="Country/ City" value={location} onChange={(e) => setLocation(e.target.value)} />
             </div>
-            <div className="flex items-center gap-3 bg-gray-50 rounded-lg px-4 py-3 md:w-48">
+            
+            <div className="flex items-center gap-3 bg-gray-50 rounded-lg px-4 py-3 md:w-52">
               <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
-              <select className="w-full bg-transparent outline-none text-gray-500 text-sm cursor-pointer" value={experience} onChange={(e) => setExperience(e.target.value)}>
-                <option value="">Level/ experience</option>
-                <option value="entry">Entry Level</option>
-                <option value="mid">Mid Level</option>
-                <option value="senior">Senior Level</option>
+              <select 
+                className="w-full bg-transparent outline-none text-gray-700 text-sm cursor-pointer" 
+                value={salary} 
+                onChange={(e) => setSalary(e.target.value)}
+              >
+                <option value="">Salary range</option>
+                {salaryOptions.map(s => (
+                  <option key={s.label} value={s.label}>{s.label}</option>
+                ))}
               </select>
             </div>
-            <button type="submit" className="bg-blue-500 hover:bg-blue-600 text-white font-semibold px-8 py-3 rounded-lg flex items-center gap-2">
+
+            <button type="submit" className="bg-blue-500 hover:bg-blue-600 text-white font-semibold px-8 py-3 rounded-lg transition-colors flex items-center justify-center gap-2">
               Search
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" /></svg>
             </button>
           </form>
-          <div className="mt-3 flex flex-wrap gap-2">
+          <div className="mt-4 flex flex-wrap gap-2">
             <span className="text-blue-100 text-sm">Related:</span>
             {['UI design', 'Web design', 'Graphic designer', 'User interface'].map(t => (
-              <button key={t} onClick={() => navigate(`/jobs?q=${t}`)} className="text-white text-sm hover:underline">{t}</button>
+              <button key={t} onClick={() => navigate(`/jobs?q=${t}`)} className="text-white text-sm hover:underline transition-colors">{t}</button>
             ))}
           </div>
         </div>
@@ -150,107 +159,86 @@ const Jobs = () => {
 
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-6 py-6 flex gap-6">
-        {/* Left Sidebar - Filters */}
         <aside className="w-56 shrink-0 hidden lg:block">
           <div className="bg-white border border-gray-200 rounded-xl p-5">
-            {/* Set Filter Header */}
             <div className="flex items-center justify-between mb-5">
               <h3 className="font-semibold text-gray-800">Set filter</h3>
-              <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 15l7-7 7 7" />
-              </svg>
             </div>
 
             {/* Sort By */}
             <div className="mb-6">
               <h4 className="text-sm font-medium text-gray-600 mb-3">Sort by</h4>
-              <div className="flex gap-2">
+              <div className="flex flex-col gap-2">
                 <button
                   onClick={() => setSortBy('relevancy')}
-                  className={`px-4 py-1.5 rounded-full text-sm font-medium transition-colors ${sortBy === 'relevancy' ? 'bg-blue-100 text-blue-600' : 'bg-gray-100 text-gray-600'}`}
+                  className={`px-4 py-1.5 rounded-full text-sm font-medium transition-all text-left ${sortBy === 'relevancy' ? 'bg-blue-100 text-blue-600' : 'bg-gray-100 text-gray-600'}`}
                 >
                   Relevancy
                 </button>
                 <button
                   onClick={() => setSortBy('newest')}
-                  className={`px-4 py-1.5 rounded-full text-sm font-medium transition-colors ${sortBy === 'newest' ? 'bg-blue-100 text-blue-600' : 'bg-gray-100 text-gray-600'}`}
+                  className={`px-4 py-1.5 rounded-full text-sm font-medium transition-all text-left ${sortBy === 'newest' ? 'bg-blue-100 text-blue-600' : 'bg-gray-100 text-gray-600'}`}
                 >
                   Newest
                 </button>
               </div>
             </div>
 
-            {/* Job Type */}
             <div className="mb-6">
               <h4 className="text-sm font-medium text-gray-600 mb-3">Job type</h4>
-              <div className="space-y-2">
-                {['Full-time', 'Internship', 'Freelance', 'Volunteer'].map((type) => (
-                  <label key={type} className="flex items-center gap-3 cursor-pointer">
-                    <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center ${jobType === type ? 'border-blue-500' : 'border-gray-300'}`}>
-                      {jobType === type && <div className="w-2 h-2 bg-blue-500 rounded-full"></div>}
-                    </div>
-                    <span className="text-sm text-gray-700">{type}</span>
+              <div className="space-y-3">
+                {['Full-time', 'Intern', 'Remote', 'Part-time'].map(type => (
+                  <label key={type} className="flex items-center gap-3 cursor-pointer group">
+                    <input
+                      type="radio"
+                      name="jobType"
+                      value={type}
+                      checked={jobType === type}
+                      onChange={() => {
+                        setJobType(type);
+                        const params = new URLSearchParams(searchParams);
+                        params.set('type', type);
+                        navigate(`/jobs?${params.toString()}`);
+                      }}
+                      className="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500"
+                    />
+                    <span className={`text-sm transition-colors ${jobType === type ? 'text-blue-600 font-semibold' : 'text-gray-700 group-hover:text-blue-500'}`}>
+                      {type}
+                    </span>
                   </label>
                 ))}
-              </div>
-            </div>
-
-            {/* Salary */}
-            <div className="mb-6">
-              <h4 className="text-sm font-medium text-gray-600 mb-3">Salary</h4>
-              <div className="text-sm text-gray-500 mb-2">${salaryRange[0]} - ${salaryRange[1]}</div>
-              <div className="relative h-2 bg-gray-200 rounded-full">
-                <div className="absolute h-2 bg-blue-500 rounded-full" style={{ left: '10%', right: '20%' }}></div>
-                <div className="absolute w-4 h-4 bg-white border-2 border-blue-500 rounded-full -top-1" style={{ left: '10%' }}></div>
-                <div className="absolute w-4 h-4 bg-white border-2 border-blue-500 rounded-full -top-1" style={{ left: '80%' }}></div>
-              </div>
-            </div>
-
-            {/* On-site/Remote */}
-            <div>
-              <h4 className="text-sm font-medium text-gray-600 mb-3">On-site/remote</h4>
-              <div className="space-y-2">
-                {['Remote', 'On site', 'Hybrid'].map((mode) => (
-                  <label key={mode} className="flex items-center gap-3 cursor-pointer">
-                    <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center ${workMode === mode ? 'border-blue-500' : 'border-gray-300'}`}>
-                      {workMode === mode && <div className="w-2 h-2 bg-blue-500 rounded-full"></div>}
-                    </div>
-                    <span className="text-sm text-gray-700">{mode}</span>
-                  </label>
-                ))}
+                {jobType && (
+                  <button 
+                    onClick={() => {
+                      setJobType('');
+                      const params = new URLSearchParams(searchParams);
+                      params.delete('type');
+                      navigate(`/jobs?${params.toString()}`);
+                    }}
+                    className="text-xs text-red-500 hover:underline mt-2"
+                  >
+                    Clear Filter
+                  </button>
+                )}
               </div>
             </div>
           </div>
         </aside>
 
-        {/* Center - Job Cards */}
         <main className="flex-1">
-          {/* Header with count and pagination */}
           <div className="flex items-center justify-between mb-4">
             <p className="text-gray-700 font-medium">{jobs.length} job results</p>
-            <div className="flex items-center gap-1">
-              <button className="p-1 text-gray-400 hover:text-gray-600" onClick={() => setCurrentPage(p => Math.max(1, p - 1))}>
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" /></svg>
-              </button>
-              {[1, 2, 3, 4].map((page) => (
-                <button
-                  key={page}
-                  onClick={() => setCurrentPage(page)}
-                  className={`w-8 h-8 rounded-full text-sm font-medium ${currentPage === page ? 'bg-blue-500 text-white' : 'text-gray-600 hover:bg-gray-100'}`}
-                >
-                  {page}
-                </button>
-              ))}
-              <button className="p-1 text-gray-400 hover:text-gray-600" onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}>
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" /></svg>
-              </button>
-            </div>
           </div>
 
-          {/* Job Cards Grid */}
           {jobs.length === 0 ? (
-            <div className="bg-gray-50 rounded-xl p-12 text-center">
-              <p className="text-gray-500">No jobs found. Try a different search.</p>
+            <div className="bg-gray-50 rounded-xl p-12 text-center border-2 border-dashed border-gray-200">
+              <p className="text-gray-500 font-medium">No jobs found matching your criteria.</p>
+              <button 
+                onClick={() => navigate('/jobs')} 
+                className="mt-4 text-blue-500 hover:underline text-sm"
+              >
+                View all jobs
+              </button>
             </div>
           ) : (
             <div className="grid md:grid-cols-2 gap-4">
@@ -258,43 +246,25 @@ const Jobs = () => {
                 <div
                   key={job.id}
                   onClick={() => setSelectedJob(job)}
-                  className={`bg-white border rounded-xl p-5 cursor-pointer transition-all hover:shadow-md ${selectedJob?.id === job.id ? 'border-blue-500 shadow-md' : 'border-gray-200'}`}
+                  className={`bg-white border rounded-xl p-5 cursor-pointer transition-all hover:shadow-md ${selectedJob?.id === job.id ? 'border-blue-500 ring-1 ring-blue-500 shadow-md' : 'border-gray-200'}`}
                 >
                   <div className="flex items-start justify-between mb-3">
                     <div className="flex items-center gap-3">
-                      {/* Company Avatar */}
-                      <div className="w-11 h-11 bg-gradient-to-br from-purple-400 to-purple-600 rounded-xl flex items-center justify-center text-white font-bold text-sm">
+                      <div className="w-11 h-11 bg-gradient-to-br from-indigo-500 to-blue-600 rounded-xl flex items-center justify-center text-white font-bold text-sm shadow-sm">
                         {job.company_name?.charAt(0) || 'C'}
                       </div>
                       <div>
-                        <h3 className="font-semibold text-gray-800">{job.title}</h3>
-                        <div className="flex items-center gap-1 text-sm text-gray-500">
-                          <svg className="w-3 h-3 text-red-500" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" /></svg>
-                          {job.location || 'Jakarta'}
-                        </div>
+                        <h3 className="font-semibold text-gray-800 line-clamp-1">{job.title}</h3>
+                        <p className="text-xs text-gray-500">{job.company_name}</p>
                       </div>
                     </div>
-                    {/* Bookmark */}
-                    <button
-                      onClick={(e) => { e.stopPropagation(); toggleSaveJob(job.id); }}
-                      className={`p-1.5 rounded-lg transition-colors ${savedJobs.includes(job.id) ? 'text-blue-500 bg-blue-50' : 'text-gray-400 hover:bg-gray-100'}`}
-                    >
-                      <svg className="w-5 h-5" fill={savedJobs.includes(job.id) ? 'currentColor' : 'none'} stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
-                      </svg>
-                    </button>
                   </div>
-
-                  {/* Tags */}
                   <div className="flex flex-wrap gap-2 mb-3">
-                    <span className="text-xs bg-gray-100 text-gray-600 px-2.5 py-1 rounded-md">{job.type || 'Full-time'}</span>
-                    <span className="text-xs bg-gray-100 text-gray-600 px-2.5 py-1 rounded-md">3+ years experience</span>
-                    <span className="text-xs bg-gray-100 text-gray-600 px-2.5 py-1 rounded-md">{formatSalary(job.salary) || '$300'}/ month</span>
+                    <span className="text-xs bg-blue-50 text-blue-600 px-2 py-1 rounded-md font-medium">{job.type}</span>
+                    <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-md font-medium">{formatSalary(job.salary)}</span>
                   </div>
-
-                  {/* Description preview */}
-                  <p className="text-xs text-gray-500 line-clamp-2">
-                    {job.description || 'have a strong command of design software such as Adobe XD, Sketch, Figma, or similar tools commonly used in the industry...'}
+                  <p className="text-xs text-gray-500 line-clamp-2 leading-relaxed">
+                    {job.description}
                   </p>
                 </div>
               ))}
@@ -302,71 +272,7 @@ const Jobs = () => {
           )}
         </main>
 
-        {/* Right Sidebar - User Profile */}
         <aside className="w-64 shrink-0 hidden xl:block">
-          {/* User Profile Card */}
-          <div className="bg-white border border-gray-200 rounded-xl p-5 mb-4 text-center">
-            <div className="w-16 h-16 bg-gradient-to-br from-orange-300 to-orange-400 rounded-full mx-auto mb-3 flex items-center justify-center">
-              {user ? (
-                <span className="text-white font-bold text-xl">{user.name?.charAt(0)}</span>
-              ) : (
-                <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                </svg>
-              )}
-            </div>
-            <h3 className="font-semibold text-gray-800">{user?.name || 'Guest User'}</h3>
-            <p className="text-sm text-gray-500">{user?.role === 'employer' ? 'Employer' : 'Job Seeker'}</p>
-            <p className="text-xs text-blue-500 mt-1">4+ years</p>
-          </div>
-
-          {/* Stats */}
-          <div className="bg-white border border-gray-200 rounded-xl p-5 mb-4">
-            <div className="flex items-center gap-3 mb-4">
-              <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
-                <svg className="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                </svg>
-              </div>
-              <div>
-                <p className="text-xs text-gray-500">Search appear</p>
-                <p className="font-bold text-gray-800">43x</p>
-              </div>
-            </div>
-            <div className="flex items-center gap-3 mb-4">
-              <div className="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center">
-                <svg className="w-4 h-4 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                </svg>
-              </div>
-              <div>
-                <p className="text-xs text-gray-500">Applied Job</p>
-                <p className="font-bold text-gray-800">56</p>
-              </div>
-            </div>
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
-                <svg className="w-4 h-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-                </svg>
-              </div>
-              <div>
-                <p className="text-xs text-gray-500">Recruiters Respond</p>
-                <p className="font-bold text-gray-800">10</p>
-              </div>
-            </div>
-          </div>
-
-          {/* Guidance Card */}
-          <div className="bg-gradient-to-br from-purple-50 to-blue-50 border border-gray-200 rounded-xl p-5">
-            <h4 className="font-semibold text-gray-800 mb-1">Guidance for you</h4>
-            <p className="text-xs text-gray-500 mb-3">based on your activity</p>
-            <p className="text-sm text-gray-600 mb-4">Boost your career with expert-led courses on resume improvement and networking to land your next opportunity.</p>
-            <div className="bg-blue-500 rounded-lg p-4 text-white">
-              <p className="text-sm font-medium">Tips to improve your resume</p>
-            </div>
-          </div>
         </aside>
       </div>
     </div>

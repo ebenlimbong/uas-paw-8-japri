@@ -16,7 +16,7 @@ const Navbar = () => {
                 <span className="text-white text-xs font-bold">●</span>
               </div>
               <span className="text-xl font-bold text-gray-900">
-                Capsule
+                JAPRI
               </span>
             </Link>
 
