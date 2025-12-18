@@ -1,24 +1,43 @@
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Home from './pages/Home';       // <-- Import Home yang baru dibuat
-import Jobs from './pages/Jobs';       // <-- Import Jobs
-import JobDetail from './pages/JobDetail';
+import { Routes, Route } from "react-router-dom";
+import { useAuth } from "./context/AuthContext.jsx";
 
-function App() {
+import Home from "./pages/Home.jsx";
+import Jobs from "./pages/Jobs.jsx";
+import JobDetail from "./pages/JobDetail.jsx";
+
+import ProtectedRoute from "./components/ProtectedRoute.jsx";
+
+// prosess
+import Login from "./pages/auth/Login";
+import Register from "./pages/auth/Register";
+
+export default function App() {
+  const { loading } = useAuth();
+
+  if (loading) {
+    return <div className="p-10 text-center">Checking auth...</div>;
+  }
+
   return (
-    <Router>
-      <Routes>
-        {/* Halaman Utama adalah Home ala Indeed */}
-        <Route path="/" element={<Home />} />
-        
-        {/* Halaman Hasil Pencarian / List Lowongan */}
-        <Route path="/jobs" element={<Jobs />} />
-        
-        {/* Halaman Detail */}
-        <Route path="/jobs/:id" element={<JobDetail />} />
-      </Routes>
-    </Router>
+    <Routes>
+
+      {/* ========== PUBLIC ROUTES ========== */}
+      <Route path="/" element={<Home />} />
+      <Route path="/jobs" element={<Jobs />} />
+      <Route path="/jobs/:id" element={<JobDetail />} />
+      <Route path="/login" element={<Login />} />
+      <Route path="/register" element={<Register />} />
+
+      {/* ========== SEEKER ONLY ========== */}
+      <Route element={<ProtectedRoute allowedRoles={["seeker"]} />}>
+        <Route path="/seeker/*" element={<div>Seeker Dashboard</div>} />
+      </Route>
+
+      {/* ========== EMPLOYER ONLY ========== */}
+      <Route element={<ProtectedRoute allowedRoles={["employer"]} />}>
+        <Route path="/employer/*" element={<div>Employer Dashboard</div>} />
+      </Route>
+
+    </Routes>
   );
 }
-
-export default App;
