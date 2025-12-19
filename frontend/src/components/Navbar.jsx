@@ -54,18 +54,6 @@ const Navbar = () => {
               >
                 Find Jobs
               </Link>
-              <Link
-                to="/companies"
-                className="text-gray-500 hover:text-blue-600 transition"
-              >
-                Companies
-              </Link>
-              <Link
-                to="/career-tips"
-                className="text-gray-500 hover:text-blue-600 transition"
-              >
-                Career tips
-              </Link>
             </div>
           </div>
 
