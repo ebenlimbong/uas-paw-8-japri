@@ -19,7 +19,7 @@
 
 ## 📋 Deskripsi Project
 
-**JobSeeker** adalah platform pencarian kerja berbasis web yang menghubungkan pencari kerja (Job Seeker) dengan perusahaan (Employer). Aplikasi ini memungkinkan pengguna untuk mencari lowongan pekerjaan, melamar pekerjaan, dan mengelola profil mereka dengan mudah.
+**Japri (JANJI PEMERINTAH) - Platform Pencarian Kerja** adalah platform pencarian kerja berbasis web yang menghubungkan pencari kerja (Job Seeker) dengan perusahaan (Employer). Aplikasi ini memungkinkan pengguna untuk mencari lowongan pekerjaan, melamar pekerjaan, dan mengelola profil mereka dengan mudah.
 
 ### ✨ Fitur Utama
 
@@ -56,7 +56,7 @@
 | Python | Bahasa pemrograman utama |
 | Pyramid | Web framework Python |
 | SQLAlchemy | ORM untuk database |
-| SQLite | Database |
+| PostgreSQL | Database |
 | JWT | Autentikasi berbasis token |
 
 ---
@@ -233,7 +233,7 @@ Authorization: Bearer <jwt_token>
 ![Seeker Profile Page](frontend/src/screenshots/seeker_profile.jpeg)
 
 ### Halaman Profil Employer
-<!-- ![Employer Profile Page](./screenshots/employer-profile.png) -->
+![Employer Profile Page](frontend/src/screenshots/employer_profile.jpeg)
 
 ---
 
