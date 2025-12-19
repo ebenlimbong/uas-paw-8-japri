@@ -1,4 +1,4 @@
-# 🚀 JobSeeker - Platform Pencarian Kerja
+# 🚀 JAPRI (JANJI PEMERINTAH) - Platform Pencarian Kerja
 
 **UAS Pengembangan Aplikasi Web (PAW) - Kelompok 8 "JAPRI"**
 
@@ -77,8 +77,8 @@ cd uas-paw-8-japri
 ### 2. Setup Backend
 
 ```bash
-# Masuk ke folder backend
-cd backend
+
+
 
 # Buat virtual environment
 python -m venv venv
@@ -90,13 +90,14 @@ source venv/bin/activate
 venv\Scripts\activate
 
 # Install dependencies
-pip install -e ".[testing]"
+(venv) pip install -r requirements.txt
 
-# Inisialisasi database
-initialize_backend_db development.ini
+# Masuk ke folder backend
+cd backend
 
 # Jalankan backend server
 pserve development.ini --reload
+(Biarkan terminal ini tetap terbuka dan berjalan.)
 ```
 
 Backend akan berjalan di: `http://localhost:6543`
