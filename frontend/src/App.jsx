@@ -4,10 +4,11 @@ import { useAuth } from "./context/AuthContext.jsx";
 import Home from "./pages/Home.jsx";
 import Jobs from "./pages/Jobs.jsx";
 import JobDetail from "./pages/JobDetail.jsx";
+import SeekerProfile from "./pages/seeker/Profile.jsx";
 
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
 
-// prosess
+// auth
 import Login from "./pages/auth/Login";
 import Register from "./pages/auth/Register";
 
@@ -20,24 +21,22 @@ export default function App() {
 
   return (
     <Routes>
-
-      {/* ========== PUBLIC ROUTES ========== */}
+      {/* ========= PUBLIC ROUTES ========= */}
       <Route path="/" element={<Home />} />
       <Route path="/jobs" element={<Jobs />} />
       <Route path="/jobs/:id" element={<JobDetail />} />
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
 
-      {/* ========== SEEKER ONLY ========== */}
+      {/* ========= SEEKER ROUTES ========= */}
       <Route element={<ProtectedRoute allowedRoles={["seeker"]} />}>
-        <Route path="/seeker/*" element={<div>Seeker Dashboard</div>} />
+        <Route path="/seeker/profile" element={<SeekerProfile />} />
       </Route>
 
-      {/* ========== EMPLOYER ONLY ========== */}
+      {/* ========= EMPLOYER ROUTES ========= */}
       <Route element={<ProtectedRoute allowedRoles={["employer"]} />}>
         <Route path="/employer/*" element={<div>Employer Dashboard</div>} />
       </Route>
-
     </Routes>
   );
 }
