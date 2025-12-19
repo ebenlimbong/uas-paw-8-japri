@@ -212,25 +212,25 @@ Authorization: Bearer <jwt_token>
 
 ## 📸 Screenshot Aplikasi
 
-> *Screenshot akan ditambahkan*
+
 
 ### Halaman Utama (Home)
-<!-- ![Home Page](./screenshots/home.png) -->
+![Home Page](frontend/src/screenshots/home_page.png)
 
 ### Halaman Login
-<!-- ![Login Page](./screenshots/login.png) -->
+![Login Page](frontend/src/screenshots/login_page.png)
 
 ### Halaman Register
-<!-- ![Register Page](./screenshots/register.png) -->
+![Register Page](frontend/src/screenshots/register_page.png)
 
 ### Halaman Daftar Lowongan
-<!-- ![Jobs Page](./screenshots/jobs.png) -->
+![Jobs Page](frontend/src/screenshots/jobs_page.jpeg)
 
 ### Halaman Detail Lowongan
-<!-- ![Job Detail Page](./screenshots/job-detail.png) -->
+![Job Detail Page](frontend/src/screenshots/job_detail.jpeg)
 
 ### Halaman Profil Seeker
-<!-- ![Seeker Profile Page](./screenshots/seeker-profile.png) -->
+![Seeker Profile Page](frontend/src/screenshots/seeker_profile.jpeg)
 
 ### Halaman Profil Employer
 <!-- ![Employer Profile Page](./screenshots/employer-profile.png) -->
@@ -239,9 +239,7 @@ Authorization: Bearer <jwt_token>
 
 ## 🎥 Video Presentasi
 
-> *Link video presentasi akan ditambahkan*
-
-<!-- [![Video Presentasi](https://img.youtube.com/vi/VIDEO_ID/0.jpg)](https://www.youtube.com/watch?v=VIDEO_ID) -->
+[Tonton Video Presentasi](https://drive.google.com/file/d/1dR29DiKOkBJKoIe3hFd26sJu3v3IcnVT/view?usp=sharing)
 
 ---
 
