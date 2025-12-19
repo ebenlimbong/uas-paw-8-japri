@@ -204,7 +204,7 @@ def search_jobs(request):
 
     return {"success": True, "count": len(results), "data": results}
 
-    @view_config(
+@view_config(
     route_name="employer_jobs",
     renderer="json",
     request_method="GET"

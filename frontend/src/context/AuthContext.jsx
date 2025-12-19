@@ -8,30 +8,32 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true); // cek token awal
 
   //  cek token saat app pertama kali jalan
-  useEffect(() => {
-    const token = localStorage.getItem("token");
+  // AuthContext.jsx
+useEffect(() => {
+  const token = localStorage.getItem("token");
 
-    if (!token) {
-      setLoading(false);
-      return;
-    }
+  if (!token) {
+    setUser(null);
+    setLoading(false);
+    return;
+  }
 
-    // ambil profile user dari backend
-    apiFetch("/profile/me")
-      .then((res) => {
-        if (res.success) {
-          setUser(res.data);
-        } else {
-          localStorage.removeItem("token");
-          setUser(null);
-        }
-      })
-      .catch(() => {
-        localStorage.removeItem("token");
-        setUser(null);
-      })
-      .finally(() => setLoading(false));
-  }, []);
+  try {
+    const payload = JSON.parse(atob(token.split(".")[1]));
+    
+    setUser({
+      id: payload.user_id,
+      email: payload.email,
+      role: payload.role,
+    });
+  } catch (err) {
+    localStorage.removeItem("token");
+    setUser(null);
+  } finally {
+    setLoading(false);
+  }
+}, []);
+
 
   //  LOGIN
   const login = async (email, password) => {
