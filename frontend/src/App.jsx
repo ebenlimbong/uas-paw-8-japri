@@ -5,7 +5,7 @@ import Home from "./pages/Home.jsx";
 import Jobs from "./pages/Jobs.jsx";
 import JobDetail from "./pages/JobDetail.jsx";
 import SeekerProfile from "./pages/seeker/Profile.jsx";
-
+import EmployerApplicants from "./pages/employer/Applicants.jsx";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
 
 // auth
