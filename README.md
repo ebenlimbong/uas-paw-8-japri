@@ -121,12 +121,10 @@ Frontend akan berjalan di: `http://localhost:5173`
 
 ## 🌐 Link Deployment
 
-| Service | URL |
-|---------|-----|
-| **Frontend** | [https://jobseeker-japri.vercel.app](https://jobseeker-japri.vercel.app) |
-| **Backend** | [https://api-jobseeker-japri.herokuapp.com](https://api-jobseeker-japri.herokuapp.com) |
+Frontend: https://japri.vercel.app/
+Backend: Soon!
 
-> ⚠️ *Link deployment akan diupdate setelah proses deployment selesai*
+> ⚠️ *Link deployment akan diupdate setelah proses deployment selesai*🙏
 
 ---
 
