@@ -19,7 +19,7 @@
 
 ## 📋 Deskripsi Project
 
-**JobSeeker** adalah platform pencarian kerja berbasis web yang menghubungkan pencari kerja (Job Seeker) dengan perusahaan (Employer). Aplikasi ini memungkinkan pengguna untuk mencari lowongan pekerjaan, melamar pekerjaan, dan mengelola profil mereka dengan mudah.
+**Japri (JANJI PEMERINTAH) - Platform Pencarian Kerja** adalah platform pencarian kerja berbasis web yang menghubungkan pencari kerja (Job Seeker) dengan perusahaan (Employer). Aplikasi ini memungkinkan pengguna untuk mencari lowongan pekerjaan, melamar pekerjaan, dan mengelola profil mereka dengan mudah.
 
 ### ✨ Fitur Utama
 
@@ -56,7 +56,7 @@
 | Python | Bahasa pemrograman utama |
 | Pyramid | Web framework Python |
 | SQLAlchemy | ORM untuk database |
-| SQLite | Database |
+| PostgreSQL | Database |
 | JWT | Autentikasi berbasis token |
 
 ---
@@ -121,12 +121,10 @@ Frontend akan berjalan di: `http://localhost:5173`
 
 ## 🌐 Link Deployment
 
-| Service | URL |
-|---------|-----|
-| **Frontend** | [https://jobseeker-japri.vercel.app](https://jobseeker-japri.vercel.app) |
-| **Backend** | [https://api-jobseeker-japri.herokuapp.com](https://api-jobseeker-japri.herokuapp.com) |
+Frontend: https://japri.vercel.app/
+Backend: Soon!
 
-> ⚠️ *Link deployment akan diupdate setelah proses deployment selesai*
+> ⚠️ *Link deployment akan diupdate setelah proses deployment selesai*🙏
 
 ---
 
@@ -212,36 +210,34 @@ Authorization: Bearer <jwt_token>
 
 ## 📸 Screenshot Aplikasi
 
-> *Screenshot akan ditambahkan*
+
 
 ### Halaman Utama (Home)
-<!-- ![Home Page](./screenshots/home.png) -->
+![Home Page](frontend/src/screenshots/home_page.png)
 
 ### Halaman Login
-<!-- ![Login Page](./screenshots/login.png) -->
+![Login Page](frontend/src/screenshots/login_page.png)
 
 ### Halaman Register
-<!-- ![Register Page](./screenshots/register.png) -->
+![Register Page](frontend/src/screenshots/register_page.png)
 
 ### Halaman Daftar Lowongan
-<!-- ![Jobs Page](./screenshots/jobs.png) -->
+![Jobs Page](frontend/src/screenshots/jobs_page.jpeg)
 
 ### Halaman Detail Lowongan
-<!-- ![Job Detail Page](./screenshots/job-detail.png) -->
+![Job Detail Page](frontend/src/screenshots/job_detail.jpeg)
 
 ### Halaman Profil Seeker
-<!-- ![Seeker Profile Page](./screenshots/seeker-profile.png) -->
+![Seeker Profile Page](frontend/src/screenshots/seeker_profile.jpeg)
 
 ### Halaman Profil Employer
-<!-- ![Employer Profile Page](./screenshots/employer-profile.png) -->
+![Employer Profile Page](frontend/src/screenshots/employer_profile.jpeg)
 
 ---
 
 ## 🎥 Video Presentasi
 
-> *Link video presentasi akan ditambahkan*
-
-<!-- [![Video Presentasi](https://img.youtube.com/vi/VIDEO_ID/0.jpg)](https://www.youtube.com/watch?v=VIDEO_ID) -->
+[Tonton Video Presentasi](https://drive.google.com/file/d/1dR29DiKOkBJKoIe3hFd26sJu3v3IcnVT/view?usp=sharing)
 
 ---
 
