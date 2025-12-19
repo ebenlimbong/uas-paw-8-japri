@@ -230,6 +230,7 @@ const Jobs = () => {
             <p className="text-gray-700 font-medium">{jobs.length} job results</p>
           </div>
 
+          {/* Job Cards Grid */}
           {jobs.length === 0 ? (
             <div className="bg-gray-50 rounded-xl p-12 text-center border-2 border-dashed border-gray-200">
               <p className="text-gray-500 font-medium">No jobs found matching your criteria.</p>
@@ -245,7 +246,11 @@ const Jobs = () => {
               {currentJobs.map((job) => (
                 <div
                   key={job.id}
-                  onClick={() => setSelectedJob(job)}
+                  // ✅ PERUBAHAN: Menambahkan navigasi ke detail ID saat kartu diklik
+                  onClick={() => {
+                    setSelectedJob(job);
+                    navigate(`/jobs/${job.id}`);
+                  }}
                   className={`bg-white border rounded-xl p-5 cursor-pointer transition-all hover:shadow-md ${selectedJob?.id === job.id ? 'border-blue-500 ring-1 ring-blue-500 shadow-md' : 'border-gray-200'}`}
                 >
                   <div className="flex items-start justify-between mb-3">
