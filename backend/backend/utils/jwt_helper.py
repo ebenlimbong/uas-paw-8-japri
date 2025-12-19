@@ -1,8 +1,16 @@
 import jwt
 import datetime
+import os # Tambahkan ini
 from pyramid.settings import asbool
 
-SECRET_KEY = "3b3n_k3r3n"
+# Ubah baris ini agar fleksibel
+# Ia akan mencari di settings production.ini, jika tidak ada pakai default
+def get_secret_key(request=None):
+    if request:
+        return request.registry.settings.get('jwt.secret', '3b3n_k3r3n')
+    return os.environ.get('JWT_SECRET', '3b3n_k3r3n')
+
+SECRET_KEY = get_secret_key()
 
 def create_token(user_id, role):
     payload = {
