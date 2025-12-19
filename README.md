@@ -212,19 +212,19 @@ Authorization: Bearer <jwt_token>
 
 ## 📸 Screenshot Aplikasi
 
-> *Screenshot akan ditambahkan*
+
 
 ### Halaman Utama (Home)
-<!-- ![Home Page](./screenshots/home.png) -->
+![Home Page](frontend/src/screenshots/home_page.png)
 
 ### Halaman Login
-<!-- ![Login Page](./screenshots/login.png) -->
+![Login Page](frontend/src/screenshots/login_page.png)
 
 ### Halaman Register
-<!-- ![Register Page](./screenshots/register.png) -->
+![Register Page](frontend/src/screenshots/register_page.png)
 
 ### Halaman Daftar Lowongan
-<!-- ![Jobs Page](./screenshots/jobs.png) -->
+![Jobs Page](frontend/src/screenshots/jobs_page.png)
 
 ### Halaman Detail Lowongan
 <!-- ![Job Detail Page](./screenshots/job-detail.png) -->
