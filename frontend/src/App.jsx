@@ -11,6 +11,7 @@ import ProtectedRoute from "./components/ProtectedRoute.jsx";
 // auth
 import Login from "./pages/auth/Login";
 import Register from "./pages/auth/Register";
+import EmployerProfile from "./pages/employer/EmployerProfile.jsx";
 
 export default function App() {
   const { loading } = useAuth();
@@ -36,6 +37,7 @@ export default function App() {
       {/* ========= EMPLOYER ROUTES ========= */}
       <Route element={<ProtectedRoute allowedRoles={["employer"]} />}>
         <Route path="/employer/*" element={<div>Employer Dashboard</div>} />
+        <Route path="/employer/profile" element={<EmployerProfile />} />
       </Route>
     </Routes>
   );
