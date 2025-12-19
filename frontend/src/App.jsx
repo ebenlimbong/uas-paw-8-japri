@@ -8,6 +8,7 @@ import SeekerProfile from "./pages/seeker/Profile.jsx";
 import EmployerApplicants from "./pages/employer/Applicants.jsx";
 import SeekerApplications from "./pages/seeker/Application.jsx";
 import SeekerSavedJobs from "./pages/seeker/SavedJobs.jsx";
+import EmployerJobs from "./pages/employer/Jobs.jsx";
 
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
 
@@ -41,6 +42,9 @@ export default function App() {
       {/* ========= EMPLOYER ROUTES ========= */}
       <Route element={<ProtectedRoute allowedRoles={["employer"]} />}>
         <Route path="/employer/*" element={<div>Employer Dashboard</div>} />
+      </Route>
+      <Route element={<ProtectedRoute allowedRoles={["employer"]} />}>
+        <Route path="/employer/jobs" element={<EmployerJobs />} />
       </Route>
     </Routes>
   );
