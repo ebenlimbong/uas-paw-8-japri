@@ -31,6 +31,7 @@ export default function App() {
       {/* ========= SEEKER ROUTES ========= */}
       <Route element={<ProtectedRoute allowedRoles={["seeker"]} />}>
         <Route path="/seeker/profile" element={<SeekerProfile />} />
+        <Route path="/seeker/applications" element={<SeekerApplications />} />
       </Route>
 
       {/* ========= EMPLOYER ROUTES ========= */}
