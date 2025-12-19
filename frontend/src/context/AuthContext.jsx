@@ -17,7 +17,7 @@ export function AuthProvider({ children }) {
     }
 
     // ambil profile user dari backend
-    apiFetch("/api/auth/me")
+    apiFetch("/profile/me")
       .then((res) => {
         if (res.success) {
           setUser(res.data);
