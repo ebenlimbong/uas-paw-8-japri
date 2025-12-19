@@ -203,3 +203,23 @@ def search_jobs(request):
     results = [job.to_dict() for job in query.all()]
 
     return {"success": True, "count": len(results), "data": results}
+
+    @view_config(
+    route_name="employer_jobs",
+    renderer="json",
+    request_method="GET"
+)
+@login_required
+@role_required("employer")
+def employer_jobs(request):
+    db = request.dbsession
+    user_id = request.user["user_id"]
+
+    jobs = db.query(models.Job)\
+        .filter_by(employer_id=user_id)\
+        .all()
+
+    return {
+        "success": True,
+        "data": [job.to_dict() for job in jobs]
+    }
